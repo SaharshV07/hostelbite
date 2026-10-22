@@ -1,0 +1,731 @@
+
+
+Software Requirements Specification
+
+for
+
+Hostel Food Delivery 
+Prediction System
+
+
+Version 1.0 approved
+
+
+Prepared by 
+Saharsh Vaibhav Lal and Vaibhav Kumar
+
+B.Tech in Information Technology
+5F BATCH-1
+
+
+Manipal University Jaipur
+
+
+6th August, 2026
+
+
+Table of Contents  
+Table of Contents ...................................................................... iiRevision History ......................................................................... iii
+1. Introduction ............................................................................ 11.1 Purpose .............................................................................. 11.2 Document Conventions ................................................... 11.3 Intended Audience and Reading Suggestions ................. 11.4 Product Scope ................................................................... 21.5 References .......................................................................... 3
+2. Overall Description ................................................................. 42.1 Product Perspective ......................................................... 42.2 Product Functions ............................................................ 52.3 User Classes and Characteristics .................................... 62.4 Operating Environment .................................................... 72.5 Design and Implementation Constraints ........................ 82.6 User Documentation ......................................................... 92.7 Assumptions and Dependencies ...................................... 9
+3. External Interface Requirements ........................................... 103.1 User Interfaces .................................................................. 103.2 Hardware Interfaces .......................................................... 113.3 Software Interfaces ........................................................... 113.4 Communications Interfaces .............................................. 12
+4. System Features ..................................................................... 134.1 User Registration & Authentication ............................... 134.2 Hostel/Mess & Vendor Onboarding ................................ 134.3 Menu Browsing & Search .............................................. 144.4 Cart & Order Placement .................................................. 144.5 Payment & Wallet Management ..................................... 154.6 Order Tracking & Delivery Management ....................... 154.7 Notifications & Alerts ..................................................... 164.8 Ratings & Reviews ........................................................... 164.9 Admin & Vendor Dashboard ........................................... 174.10 Complaint & Refund Management ................................ 174.11 Reporting & Analytics ................................................... 18
+5. Other Nonfunctional Requirements ..................................... 195.1 Performance Requirements ............................................ 195.2 Safety Requirements ....................................................... 205.3 Security Requirements .................................................... 205.4 Software Quality Attributes ............................................ 205.5 Business Rules .................................................................. 21
+6. Other Requirements .............................................................. 21
+Appendix A: Glossary ................................................................ 23Appendix B: Analysis Models ................................................... 24Appendix C: To Be Determined List ......................................... 25Appendix D: Requirements Traceability Matrix ....................... 26
+
+Revision History 
+Name
+Date
+Reason For Changes
+Version
+Saharsh Vaibhav Lal, Vaibhav Kumar
+15-Aug-2026
+Initial draft based on stakeholder interviews with hostel mess committee and student council; captured raw problem statement and rough feature list
+0.1
+Saharsh Vaibhav Lal, Vaibhav Kumar
+22-Aug-2026
+First structured pass into IEEE 830 skeleton; Sections 1 and 2 drafted
+0.3
+
+Saharsh Vaibhav Lal, Vaibhav Kumar
+28-Aug-2026
+Added vendor onboarding, wallet, and refund modules after feedback from mess vendors during a walkthrough session
+0.5
+Saharsh Vaibhav Lal, Vaibhav Kumar
+02-Sep-2026
+Expanded System Features (Section 4) with full functional requirement sets for all eleven modules
+0.7
+Saharsh Vaibhav Lal, Vaibhav Kumar
+05-Sep-2026
+Expanded nonfunctional requirements, security, and analysis models; aligned to IEEE 830-1998 structure
+0.9
+Saharsh Vaibhav Lal, Vaibhav Kumar
+09-Sep-2026
+Final review, glossary, traceability matrix, and TBD list added
+0.95
+Saharsh Vaibhav Lal, Vaibhav Kumar
+10-Sep-2026
+Document expanded to full-page density for formal submission; additional detail added across all sections
+1.0
+
+Introduction
+
+1.1 Purpose
+
+This document specifies the complete software requirements for HostelBite, a Hostel Food Delivery Application designed to digitize food ordering, mess subscription management, and last-mile delivery within university hostel campuses. Version 1.0 of this Software Requirements Specification (SRS) covers the entirety of the proposed system — not a partial subsystem — including the student-facing mobile and web application, the vendor and mess-committee management dashboard, the delivery-personnel interface, and the platform's administrative backend.
+The purpose of this document is threefold. First, it serves as a contract of understanding between the development team (the authors) and the project stakeholders — the hostel mess committee, empaneled food vendors, and university administration acting as the informal client for this academic project — regarding exactly what the system will and will not do. Second, it acts as the primary technical reference from which system design, database schema, API contracts, and test plans will be derived in subsequent phases of the Software Engineering Lab coursework. Third, it functions as a baseline for verification and validation, allowing each requirement to be traced to a corresponding test case and, eventually, to an implemented and demonstrably working feature during project evaluation.
+This SRS assumes no prior familiarity with the system on the part of the reader and is written to be self-contained, with all domain-specific terminology defined in Appendix A.
+
+
+1.2 Document Conventions
+
+Requirement statements in this document use the keyword "shall" to denote requirements that are mandatory for the system to be considered complete, and "should" to denote requirements that are desirable but not strictly mandatory for the Version 1.0 release. The word "may" is used sparingly to denote genuinely optional behavior left to implementer discretion.
+Each functional requirement is uniquely and permanently identified using the format FR-<Module>-<Number> (e.g., FR-ORD-01 for the first functional requirement under the Order Placement module), so that it can be referenced unambiguously from design documents, test cases, and the traceability matrix in Appendix D. Nonfunctional requirements follow the parallel convention NFR-<Category>-<Number> (e.g., NFR-PERF-03), and business rules follow BR-<Number>.
+Priority levels — High, Medium, or Low — are assigned at the feature level in Section 4 and are inherited by all individual requirements under that feature unless explicitly overridden at the requirement level with a bracketed priority tag. Bold text is used to denote terms that are formally defined in Appendix A (Glossary) the first time they appear in a given section. Tables are numbered sequentially per section (e.g., Table 2.3-1) and listed in the List of Tables on Page 2.
+
+
+1.3 Intended Audience and Reading Suggestions
+
+This SRS is written for four distinct reader groups, each of whom is expected to engage with the document differently depending on their role in the project lifecycle.
+Development Team (Saharsh Vaibhav Lal, Vaibhav Kumar, and any future contributors): Should read this document in its entirety, but will derive the most direct implementation value from Section 3 (External Interface Requirements), Section 4 (System Features, which contains all functional requirements), and Section 5 (Nonfunctional Requirements). The development team should treat every FR-, NFR-, and BR- tagged statement as a testable acceptance criterion and should cross-reference Appendix D before beginning implementation of any module to understand its dependencies.
+Project Mentors and Academic Evaluators: Are expected to read Sections 1 and 2 for a conceptual understanding of the problem and proposed solution, followed by a review of Appendix B (Analysis Models) to assess architectural soundness, and Section 4 headers (without necessarily reading every individual FR statement) to gauge feature completeness relative to the project's academic scope and grading rubric.
+Mess Vendors and Hostel Administration (acting as proxy client stakeholders): Should focus on Section 2 (Overall Description) to understand the product's purpose and boundaries, Section 4.2 (Vendor Onboarding) and Section 4.9 (Admin Dashboard) to understand what operational control they will have, and Section 5.5 (Business Rules) since these directly encode policies negotiated with them during requirements gathering.
+Quality Assurance / Testers: Should use the requirement IDs throughout Section 4 as the direct basis for constructing a test case matrix, ensuring each FR maps to at least one positive and one negative test case, and should additionally consult Section 5 for performance, security, and reliability test benchmarks.
+Readers unfamiliar with the hostel food-ordering domain are strongly advised to read Section 2 (Overall Description) in full before jumping into Section 4, since Section 4's functional requirements assume the actor definitions and system boundaries established earlier in the document.
+
+
+1.4 Product Scope
+
+HostelBite aims to eliminate the inefficiencies of manual, phone-call-based, register-entry, or walk-in food ordering within hostel campuses by providing a single unified digital platform connecting three primary actors: students/residents, mess and local food vendors, and delivery personnel, with a fourth supervisory actor, the Hostel Administrator, overseeing platform-wide operations.
+Presently, most hostel messes at Manipal University Jaipur and comparable institutions rely on a combination of physical meal-count registers, WhatsApp group broadcasts for daily menus, and informal phone-call ordering for outside vendors. This creates several documented pain points, gathered directly from stakeholder interviews conducted by the authors in August 2026: (a) mess committees routinely over-prepare or under-prepare food because they lack advance visibility into how many residents intend to eat a given meal; (b) students frequently wait in physical queues or make repeated phone calls to vendors during peak hours with no order-status visibility; (c) payment is almost entirely cash-based, creating reconciliation difficulty for vendors and security/logistics concerns for students; and (d) there is no structured mechanism for students to provide feedback on food quality that vendors or the mess committee can act upon systematically.
+The system will allow students to browse the daily mess menu and empaneled third-party vendor menus side by side, place orders with item customization and delivery scheduling, pay digitally through UPI, card, or an in-app prepaid hostel wallet, track their delivery from acceptance through hand-off in real time, and rate their experience post-delivery. Vendors and the mess committee will manage their menus, toggle item availability, and process the incoming order queue through a dedicated web dashboard. The Hostel Administrator will approve new vendors, resolve escalated disputes, and access campus-wide analytics for mess planning and vendor performance evaluation.
+The product's core measurable objectives, agreed with stakeholders, are: (1) reducing average order-to-delivery wait time relative to the current phone-call-based process; (2) minimizing food wastage by giving the mess committee advance visibility into expected meal counts; (3) providing a cashless transaction experience suited to a student population that increasingly expects digital payment; and (4) giving hostel administration structured analytics that were previously unavailable through manual processes.
+Explicitly out of scope for Version 1.0: inter-campus or off-campus delivery beyond the hostel boundary; aggregation of third-party restaurants not formally empaneled through the vendor onboarding workflow (Section 4.2); AI-based meal recommendation or personalization; and any hardware-based kiosk or POS terminal deployment. These exclusions are revisited as candidate future-scope items in Appendix C.
+
+1.5 References
+
+  IEEE Std 830-1998, IEEE Recommended Practice for Software Requirements Specifications, Institute of Electrical and Electronics Engineers. 
+  Sommerville, I., Software Engineering, 10th Edition, Pearson Education, 2015. 
+  Pressman, R. S., and Maxim, B. R., Software Engineering: A Practitioner's Approach, 9th Edition, McGraw-Hill Education. 
+  Manipal University Jaipur, Department of Information Technology — Software Engineering Lab Course Handbook, Academic Year 2026–27. 
+  Razorpay/UPI Payment Gateway API Documentation, accessed September 2026, developer.razorpay.com. 
+  Firebase Cloud Messaging Documentation, Google Developers, accessed September 2026. 
+  Reserve Bank of India, Master Direction on Prepaid Payment Instruments (PPIs), applicable regulatory framework for the in-app wallet feature. 
+  Food Safety and Standards Authority of India (FSSAI) licensing guidelines for food business operators. 
+  Project stakeholder interview notes — Hostel Mess Committee and Student Council, MUJ (internal document, August 2026). 
+  W3C Web Content Accessibility Guidelines (WCAG) 2.1, referenced for UI accessibility requirements in Section 3.1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overall Description
+Product Perspective
+HostelBite is conceived as a new, self-contained product; it is not a modification or extension of any existing commercial or institutional software system, though it functionally replaces the informal manual processes currently used by hostel mess committees, namely register-based meal counting and WhatsApp-broadcast-based vendor ordering described in Section 1.4.
+The system follows a three-tier client-server architecture, chosen specifically for its clear separation of concerns and its suitability to the two-person development team's timeline and skillset:
+Presentation Tier: A cross-platform mobile application built using Flutter, targeting both students and delivery personnel, and a responsive web-based dashboard built using React, targeting vendors and administrators. Flutter was chosen over native Android/iOS development specifically to allow a two-developer team to maintain a single codebase across both major mobile platforms within a single academic semester.
+Application Tier: A RESTful API backend built on Node.js with the Express framework, responsible for all business logic, authentication and authorization, order-state orchestration, and coordination with external payment and notification services.
+Data Tier: A PostgreSQL relational database serving as the system of record for transactional data — users, orders, menus, and payments — supplemented by a Redis in-memory store used for session management, caching of frequently-read data such as the daily menu, and real-time publish/subscribe messaging that powers live order-status updates.
+
+The system interfaces with several external services rather than implementing this functionality natively, in keeping with sound software engineering practice of not reinventing well-solved problems: a payment gateway (Razorpay, supporting UPI, cards, and net banking) for all monetary transactions; a push-notification service (Firebase Cloud Messaging) for real-time alerts to students, vendors, and delivery agents; an SMS gateway as a fallback notification channel for critical transactional messages when push delivery cannot be confirmed; and, where institutional cooperation permits, the university's existing student directory for cross-verification of roll numbers during registration.
+Figure 2.1-1: System Context Diagram (described). At the center of the system sits the API Gateway, which routes requests to four logical backend services: the User Service (authentication, profile, and role management), the Order Service (cart, checkout, and order-state machine), the Payment Service (gateway integration, wallet ledger, and refund processing), and the Notification Service (push and SMS dispatch). The Student Mobile App and Delivery Agent App both connect to the API Gateway over HTTPS and maintain a persistent WebSocket connection for real-time order-status updates. The Vendor/Admin Web Dashboard connects similarly but does not require the WebSocket channel for most operations, relying instead on periodic polling supplemented by push notifications for new-order alerts. All four backend services read from and write to the shared PostgreSQL database, while the Order Service additionally uses Redis for its real-time pub/sub channel.
+This architectural separation means that, for example, an outage or slowdown in the Payment Service's connection to the external gateway does not prevent students from browsing menus or vendors from managing their catalog — a deliberate resilience decision informed by the team's coursework in distributed systems design. A full architecture diagram with component boundaries is maintained separately in the project's technical design repository and is referenced here in keeping with IEEE 830 Appendix B conventions for supporting analysis models.
+
+
+Product Functions
+At a summary level — with full elaboration deferred to the individual functional requirements in Section 4 — HostelBite shall provide the following major categories of functionality, organized around the natural workflow of a hostel food order from account creation through post-delivery feedback:
+Account management: Registration, OTP-based verification, login, and profile management for all four primary actor types (students, vendors, delivery agents, administrators), with hostel-block and room-number capture specific to the student role for delivery-address purposes.
+Menu discovery: Daily mess-menu display refreshed each morning, empaneled third-party vendor catalog browsing, text search, and filtering by cuisine type, price range, and dietary classification (vegetarian, non-vegetarian, vegan, Jain).
+Order placement: Shopping-cart management with quantity adjustment, item customization notes, delivery-slot scheduling (immediate or advance), delivery-point selection within the hostel, and a streamlined order-confirmation flow.
+Payment processing: Support for UPI, debit/credit card payment via the integrated gateway, and a dedicated in-app prepaid wallet supporting manual top-up as well as automatic recurring debit for mess-subscription billing.
+Delivery coordination: Automatic or manual assignment of ready orders to available delivery personnel, live order-status broadcasting to all relevant actors, and delivery-point-aware routing within the hostel premises.
+Notifications: Multi-channel (push-first, SMS-fallback) alerts at every meaningful order-state transition, plus optional promotional notifications that students may opt out of independently from transactional alerts.
+Feedback loop: Post-delivery star ratings and written reviews, aggregated into a vendor-level score visible to future customers, with a single vendor-response allowance per review.
+Vendor and mess operations: Full menu CRUD (create, read, update, delete) functionality, real-time order-queue management presented as a Kanban-style board, and instantaneous item-availability toggling to reflect kitchen realities such as running out of a dish.
+Administrative oversight: Vendor-application review and approval workflow, complaint escalation and dispute resolution tooling, manual refund authorization above a configured threshold, and campus-wide analytics dashboards covering order volume, revenue, and estimated food wastage.
+Complaint handling: A structured, SLA-bound complaint-raising and resolution pathway distinct from the general ratings-and-reviews feedback loop, intended specifically for order-level issues requiring remediation such as refunds.
+These nine function categories map directly to the eleven system features elaborated with individual, testable functional requirements beginning in Section 4 (menu discovery and order placement additionally span cart management as a connective sub-function).
+                                                                        
+
+
+
+
+
+
+
+User Classes and Characteristics
+Table 2.3-1: User Classes and Characteristics
+User Class
+Description
+Technical Expertise
+Frequency of Use
+Key Motivations
+Student/Resident
+The primary consumer of the platform; orders food from the mess or empaneled vendors, manages an in-app wallet, and provides post-order feedback
+Low–Moderate; assumed to be a typical smartphone-literate university student with no expectation of technical sophistication
+Daily, often multiple times per day (breakfast, lunch, dinner, snacks)
+Speed of ordering, transparency of delivery status, cashless convenience
+Mess Committee Staff
+Manages the hostel's primary dining facility, configures the daily menu, and administers the subscription-based meal plan
+Low; may require in-app guidance and a printed quick-reference for daily menu updates
+Daily
+Reducing food wastage, simplifying meal-count tracking, reducing manual paperwork
+Vendor (independent/local eatery)
+An empaneled third-party food business managing its own menu and fulfilling incoming orders through the dashboard
+Low–Moderate; typically a small-business owner or staff member with basic computer literacy
+Daily, concentrated around peak meal-time windows
+Increased order volume, reduced missed-call ordering overhead, timely payout
+Delivery Personnel
+Accepts and fulfills delivery tasks assigned by the system, updates order status in real time as they progress through pickup and drop-off
+Low; interacts primarily through a simplified task-list interface
+Daily, shift-based
+Fair task assignment, clear delivery-point information, timely compensation
+Hostel Administrator
+Oversees platform-wide operations: approves or rejects new vendors, resolves escalated disputes, and reviews analytics for mess-planning decisions
+Moderate; comfortable with dashboard-style web applications
+Weekly for routine review, ad hoc for dispute escalation
+Operational oversight, data-driven mess planning, vendor accountability
+System Administrator
+A technical role (occupied by the development team during the academic project) responsible for platform configuration, deployment, uptime monitoring, and security patching
+High; expected to have full-stack development competency
+As needed, primarily during initial deployment and incident response
+System reliability, security posture, maintainability
+
+
+Because the largest and most frequent user class (students) is assumed to have limited patience for a complex or slow interface, the mobile application is deliberately designed to prioritize a maximum three-tap ordering flow from menu browsing to order confirmation, as formalized in Section 3.1 (UI-02). This design constraint was validated informally against five sample students during the requirements-gathering phase, all of whom expressed frustration with the current phone-call-based ordering process taking, by their estimate, three to five minutes per order..
+
+Operating Environment
+HostelBite's student-facing and delivery-agent applications shall run on Android 9.0 (API level 28) and above, and iOS 14.0 and above, chosen as the minimum supported versions based on an informal survey of device generations currently in use among hostel residents, which indicated negligible usage of older OS versions within the target population. The vendor and administrator dashboard shall run within modern desktop and tablet web browsers — specifically the latest two major stable releases of Google Chrome, Mozilla Firefox, and Microsoft Edge — at a minimum viewport resolution of 1024×768, with graceful responsive degradation down to tablet-sized viewports of 768×1024 to accommodate vendors who may prefer managing orders from a tablet placed at their food counter.
+
+Table 2.4-1: Minimum Device Specifications
+Component
+Student/Delivery App
+Vendor/Admin Dashboard
+Operating System
+Android 9.0+ / iOS 14.0+
+Any OS with a supported modern browser
+RAM
+2 GB minimum
+4 GB recommended
+Network
+3G minimum, 4G/Wi-Fi recommended
+Broadband/Wi-Fi recommended
+Storage
+100 MB free space
+N/A (web-based)
+GPS
+Required (delivery agent only)
+Not applicable
+Camera
+Required (delivery agent, optional for QR verification)
+Not applicable
+
+The backend services shall be deployed on a Linux-based cloud environment running Ubuntu 22.04 LTS, using containerized services orchestrated via Docker (and Docker Compose for the development environment, with potential migration to a lightweight Kubernetes setup should the project extend beyond a single-campus pilot). PostgreSQL 15 serves as the primary relational data store and Redis 7 provides caching and pub/sub messaging, both deployed as managed or self-hosted containers within the same cloud environment to minimize network latency between the application tier and data tier. The specific cloud provider shall be selected based on cost considerations appropriate to an academic project budget, with a preference for providers offering a free or low-cost student tier (e.g., a low-cost VPS provider or a platform-as-a-service option), while ensuring the chosen provider supports the campus's data-residency expectations for student personal information.
+Design and Implementation Constraints
+The following constraints were identified during requirements gathering and shall bound all subsequent design and implementation decisions for Version 1.0 of the system:
+Network reliability constraint: The system must operate acceptably under intermittent hostel Wi-Fi conditions, which stakeholder interviews confirmed to be a recurring issue in several hostel blocks. Core screens — specifically the menu-browsing and cart screens — must support local caching of previously-loaded data with automatic synchronization once connectivity is restored, so that a student can continue browsing a cached menu even during a brief network drop.
+Regulatory payment constraint: All payment processing, and specifically the in-app prepaid wallet, must comply with Reserve Bank of India guidelines governing Prepaid Payment Instruments (PPIs), including the maximum permissible stored balance and any applicable KYC requirements for wallet usage beyond minimal-KYC thresholds.
+PCI-DSS scope minimization constraint: The platform must not store raw card numbers, CVV codes, or any other data that would bring the system into full PCI-DSS scope; all card transactions must be tokenized and processed entirely through the integrated payment gateway's hosted checkout or SDK.
+Technology stack constraint: The mobile application must be built using Flutter, and the backend must be built using Node.js with Express, both decisions driven by the existing skillset of the two-person development team and by prior coursework alignment within the B.Tech Information Technology curriculum, ensuring the team can realistically deliver a working system within one academic semester.
+Deployment scale constraint: The system is deliberately constrained to a single-campus, single-tenant deployment model for Version 1.0; a multi-campus or multi-tenant architecture supporting multiple universities simultaneously is explicitly deferred to a future version and tracked as TBD-item in Appendix C, to avoid over-engineering within the available project timeline.
+Timeline constraint: Development is constrained to the duration of a single academic semester as governed by the Software Engineering Lab course schedule at Manipal University Jaipur, which directly influenced the decision to scope Version 1.0 to a single-hostel pilot rather than a full multi-hostel campus rollout.
+Team-size constraint: With only two developers (the authors) responsible for the full stack — mobile, backend, and dashboard — feature prioritization in Section 4 favors depth in the core ordering and delivery flow over breadth of secondary features such as advanced analytics or promotional-code systems.
+User Documentation
+The following user-facing documentation artifacts shall be delivered alongside the software, each targeted at a specific user class identified in Section 2.3:
+In-app onboarding tutorial — a brief, skippable first-launch walkthrough for the Student role, covering account registration, menu browsing, and the first order-placement flow, presented as a maximum of five swipeable screens.
+Vendor Dashboard User Guide (PDF) — a document covering menu management, order-queue handling, item-availability toggling, and payout/settlement understanding, written in plain, non-technical language suitable for small-business vendor owners.
+Administrator Manual (PDF) — covering the vendor-approval workflow, complaint-escalation handling, refund-authorization process, and how to interpret the analytics dashboard for mess-planning decisions.
+Delivery Agent Quick-Start Card — a single-page printable/digital reference covering how to accept assigned orders, update delivery status, and use the in-app navigation aid to locate hostel rooms.
+In-app FAQ / Help Section — accessible from the Profile tab of the student application, covering common issues such as payment failures, order cancellation policy, and how to raise a complaint.
+All documentation shall be authored in Markdown for ease of version control alongside the codebase, and shall be exported to PDF for distribution to non-technical stakeholders such as vendors and the mess committee. Documentation shall be updated in lockstep with any functional change to the corresponding feature, and each documentation artifact's version number shall be kept synchronized with the software release it accompanies.
+
+Assumptions and Dependencies
+The following assumptions underlie the requirements specified in this document, and their invalidation would necessitate a revision of scope or approach:
+It is assumed that the hostel campus provides sufficiently reliable indoor and outdoor Wi-Fi coverage to support order placement and real-time status updates during normal operation, notwithstanding the intermittent-connectivity resilience built in per Section 2.5.
+It is assumed that the target student population possesses either a smartphone with UPI-enabled banking access, or is willing to adopt the platform's prepaid wallet as an alternative, given that a meaningful subset of first-year students may not yet have activated UPI on their personal bank accounts.
+It is assumed that at least one delivery-personnel resource is realistically available per hostel block during core operational hours (7:00 AM to 11:00 PM), whether sourced from existing mess staff, part-time student employment, or a dedicated hired delivery team — the specific staffing model being outside the scope of this software specification.
+It is assumed that empaneled vendors are willing and able to maintain reasonably prompt digital menu updates; a vendor who never updates item availability will degrade the accuracy of the platform's real-time stock information but will not cause a system failure.
+The system's core functionality carries hard dependencies on the continued availability and API stability of the following third-party services: the Razorpay (or equivalent) payment gateway for all monetary transactions; Firebase Cloud Messaging for push notification delivery; and an SMS gateway provider for fallback notification delivery. Any sustained outage in these external dependencies will degrade, but per the resilience design in Section 2.1, not entirely halt, core platform functionality such as menu browsing.
+
+External Interface Requirements
+User Interfaces
+The student mobile application shall present four primary screens accessible via a persistent bottom navigation bar, chosen as the dominant mobile navigation pattern for frequently-used, flat (non-hierarchical) feature sets: Home/Menu, Cart, Orders (live tracking and history), and Profile/Wallet. The overall visual design shall follow Material Design 3 guidelines when rendered on Android and shall approximate Apple's Human Interface Guidelines conventions when rendered on iOS, leveraging Flutter's adaptive widget capabilities to achieve platform-appropriate look and feel without maintaining two separate codebases.
+The following specific interface requirements shall govern the student, vendor, and delivery-agent interfaces:
+UI-01: The Home screen shall display the current day's hostel mess menu (for subscribed students) positioned above the listing of empaneled vendors, with vendors sorted by a combination of estimated delivery time and the student's hostel-block proximity.
+UI-02: The complete cart-to-checkout flow shall not exceed three taps from initial item selection to final order confirmation, measured from the item detail screen's "Add to Cart" action through to the confirmation receipt screen.
+UI-03: The Order Tracking screen shall present order progress using a horizontal stepper visualization with five discrete states: Placed → Accepted → Preparing → Out for Delivery → Delivered, with the currently active state visually emphasized and prior states shown with completion timestamps.
+UI-04: All monetary values displayed anywhere in the application shall be formatted in Indian Rupees (₹) with two decimal places of precision, following standard Indian currency formatting conventions (e.g., ₹1,250.00).
+UI-05: The vendor dashboard shall present its incoming order queue as a Kanban-style board with four columns — New, In Progress, Ready, and Completed — allowing a vendor to visually triage order volume at a glance during peak periods without needing to open individual order records.
+UI-06: All interactive elements and text within the application shall meet WCAG 2.1 Level AA color-contrast requirements, and the application shall support a user-adjustable font-scaling setting within Profile settings to accommodate students with visual impairment. 
+UI-07: The Cart screen shall display a running subtotal, applicable delivery fee, and platform fee as individually itemized line items before the final total, ensuring pricing transparency and avoiding surprise charges at checkout. 
+UI-08: The Delivery Agent application shall present assigned tasks in a simplified, single-column list view sorted by pickup urgency, deliberately avoiding the more complex multi-panel dashboard layout used by vendors, in recognition of the delivery agent's typically brief, on-the-go interaction pattern with the app. 
+UI-09: Error states (e.g., payment failure, network timeout) shall be communicated using plain, non-technical language with a clear, single primary recovery action (such as "Retry Payment" or "Check Connection"), avoiding raw error codes or stack traces in any user-facing surface. 
+UI-10: The Administrator dashboard shall present a summary landing page ("Overview") showing today's order volume, pending vendor approvals, and open complaints as at-a-glance cards before requiring navigation into more detailed sub-views.
+
+Wireframe-level mockups corresponding to each of the above requirements are maintained separately in the project's design repository (Figma source files) and are referenced but not reproduced within this textual specification, in keeping with the convention that an SRS specifies what the interface must achieve rather than dictating exact pixel-level layout, which is a design-phase concern.
+Hardware Interfaces
+HostelBite has no requirement to interface with specialized or dedicated hardware devices in Version 1.0; the system is designed to run entirely on commodity consumer smartphones and standard web-browsing hardware, in keeping with the project's constrained development timeline and the goal of minimizing deployment friction for the pilot hostel.
+The following hardware interface requirements apply specifically to smartphone sensors accessed through the mobile operating system's standard APIs, rather than any purpose-built or external hardware:
+HW-01: The Delivery Agent application shall interface with the host smartphone's GPS module to obtain and periodically transmit the agent's live location while an order is in the "Out for Delivery" state, with a required positional accuracy of within 15 meters to support meaningful in-hostel location display.
+HW-02: The Delivery Agent application shall interface with the host smartphone's camera module to support an optional proof-of-delivery photograph, captured at the point of hand-off, which shall be attached to the order record for dispute-resolution purposes.
+HW-03: The Student and Delivery Agent applications shall interface with the host smartphone's camera module to support QR-code scanning as a lightweight order-pickup and delivery-verification mechanism, serving as an alternative to manual status confirmation and reducing the possibility of a delivery agent marking an order delivered before actual hand-off.
+HW-04: The Student application shall interface with the host smartphone's push-notification subsystem (as exposed through the operating system, via Firebase Cloud Messaging) to receive real-time order-status alerts even when the application is not in the foreground.
+No point-of-sale (POS) terminal, dedicated barcode scanner, or printer-based receipt hardware is required for Version 1.0; digital receipts are considered sufficient given the target student demographic's comfort with fully digital transaction records, and the QR-code-based verification mechanism described in HW-03 was deliberately chosen as a low-cost software-only alternative to a hardware barcode scanner.
+
+Software Interfaces
+Table 3.3-1: External Software Interfaces
+Interface
+Purpose
+Protocol/Format
+Failure Handling
+Payment Gateway (Razorpay/UPI)
+Process order payments, wallet top-ups, and refunds
+REST over HTTPS, JSON payloads, asynchronous webhook callbacks for payment confirmation
+Retry with exponential backoff (max 3 attempts); order held in "Payment Pending" state until resolved
+Firebase Cloud Messaging
+Deliver push notifications to students, vendors, and delivery agents
+HTTPS, JSON, device-token-based targeting 
+Falls back to SMS gateway per FR-NOT-04 if delivery is not acknowledged within 60 seconds
+SMS Gateway (e.g., MSG91 or equivalent)
+Fallback delivery for critical transactional notifications
+REST over HTTPS
+Logged as a delivery failure if both push and SMS attempts fail; visible in admin audit log
+PostgreSQL Database
+System of record for users, orders, menus, payments, and reviews
+SQL over TCP, connection-pooled via the application's ORM layer
+Automated daily backups; connection-pool exhaustion triggers alerting
+Redis Cache/Pub-Sub
+Session storage, menu caching, and real-time order-status broadcast channel
+TCP (Redis protocol)
+Falls back to direct database polling for status updates if Redis becomes unavailable, at reduced real-time performance
+Google Maps Platform (optional, for delivery-agent in-hostel navigation aid)
+Renders a simplified hostel-block map with delivery-point markers
+REST/HTTPS, JSON
+Degrades gracefully to text-based delivery-point instructions if unavailable
+
+Communications Interfaces
+All communication between the mobile and web clients and the backend API shall occur exclusively over HTTPS using TLS version 1.2 or higher; plaintext HTTP shall not be permitted for any endpoint under any circumstance, including during local development, in order to enforce security discipline from the earliest stages of implementation.
+Real-time order-status updates — a core differentiator of the platform relative to the existing phone-call-based process — shall be delivered using a WebSocket connection established via the Socket.IO library, chosen specifically for its built-in automatic fallback to HTTP long-polling on restrictive hostel network configurations that may block raw WebSocket upgrade requests (a scenario the authors confirmed occurs on at least one campus network segment during preliminary testing).
+All request and response payloads exchanged between client and server shall be formatted as JSON, adhering to a documented OpenAPI 3.0 specification maintained as a separate artifact from this SRS within the project's technical repository, ensuring that API contract details (exact field names, types, and validation rules) remain independently versionable from this higher-level requirements document.
+Additional communications interface requirements:
+COMM-01: The system shall use a single, versioned API base path (e.g., /api/v1/) to allow for backward-compatible evolution of the API contract as the project progresses beyond Version 1.0.
+COMM-02: All API error responses shall follow a consistent JSON error envelope containing an error code, a human-readable message, and (where applicable) a field-level validation detail array, to simplify consistent client-side error handling across the mobile app and web dashboard.
+COMM-03: The WebSocket channel shall implement automatic reconnection with exponential backoff on connection loss, ensuring that a brief network interruption does not require the user to manually refresh the application to resume receiving live order updates.
+COMM-04: Webhook callbacks received from the payment gateway shall be cryptographically verified using the gateway's provided signature-verification mechanism before being trusted, to prevent forged payment-confirmation requests.
+
+4. System Features
+Section 4 is presented in a consolidated, table-driven format to keep each feature's essential requirements traceable while minimizing page footprint. Each feature retains its priority designation, a one-line description, and its complete list of requirement IDs. Full requirement text for each ID is maintained in the project's living requirements database and is independently traceable via Appendix D.
+4.1 User Registration & Authentication
+Priority: High. Enables students, vendors, delivery personnel, and administrators to securely register, verify identity via OTP, and authenticate before accessing role-specific functionality.
+Stimulus/Response: A new student registers using a university email and mobile number, verifies via OTP, and provides hostel block/room details; a returning user authenticates via stored session or credentials and is routed to their role-specific landing screen.
+FR-AUTH-01 University-email + mobile OTP verification required for student signup.
+FR-AUTH-02 Mandatory hostel block/floor/room capture at registration, used to prefill delivery address.
+FR-AUTH-03 Vendor registration gated behind admin approval; account inactive until approved.
+FR-AUTH-04 JWT-based sessions with a 30-day refresh-token validity window.
+FR-AUTH-05 OTP-based self-service password reset without admin intervention.
+FR-AUTH-06 Account lockout for 15 minutes after 5 consecutive failed logins.
+FR-AUTH-07 Editable delivery address (block/floor/room) from Profile settings.
+FR-AUTH-08 Minimum password complexity policy enforced at creation and reset.
+
+4.2 Hostel/Mess & Vendor Onboarding
+Priority: High. Governs how the mess committee and third-party vendors get formally listed on the platform.
+Stimulus/Response: A prospective vendor submits an application with FSSAI license details; the Administrator reviews and approves, rejects, or requests revision; an approved vendor gains dashboard access and becomes visible to students.
+FR-VEN-01 Mandatory FSSAI license upload and business proof at application.
+FR-VEN-02 Admin approve/reject/request-revision workflow with a mandatory comment.
+FR-VEN-03 Mess Committee configuration of meal plan and subscription pricing.
+FR-VEN-04 Vendor-defined serviceable hostel blocks and delivery time windows.
+FR-VEN-05 Automated alert when a vendor's FSSAI license nears 30-day expiry.
+FR-VEN-06 Admin-initiated vendor suspension, immediately hiding the vendor.
+FR-VEN-07 Mandatory cuisine-category selection at onboarding for filtering.
+FR-VEN-08 Vendor self-service order-pause toggle, independent of admin action.
+
+4.3 Menu Browsing & Search
+Priority: High. The core discovery feature through which students find items they wish to order.
+Stimulus/Response: A student browses the Home screen menu and vendor listings, applies dietary/price/cuisine filters, and taps an item to view its detail page; alternatively, a free-text search returns ranked results across all catalogs.
+FR-MEN-01 Daily mess menu displayed, refreshed each day by 6:00 AM.
+FR-MEN-02 Dietary-tag filtering: Vegetarian, Non-Vegetarian, Vegan, Jain.
+FR-MEN-03 Relevance-ranked search returning results within 2 seconds (up to 5,000 items).
+FR-MEN-04 Real-time greying-out of vendor-marked out-of-stock items.
+FR-MEN-05 Estimated preparation-and-delivery time shown per vendor.
+FR-MEN-06 Student-marked “favorites” list for quick reordering.
+FR-MEN-07 Price-range slider filter applied against average vendor item price.
+FR-MEN-08 “New Item” badge for items added within the preceding 7 days.
+
+4.4 Cart & Order Placement
+Priority: High. The single most business-critical workflow in the system, through which every order is created.
+Stimulus/Response: A student adds items to their cart, reviews the itemized total, selects a delivery slot and delivery point, adds optional instructions, and confirms; the order is transmitted to the vendor's queue in the “Placed” state.
+FR-ORD-01 Single-vendor cart enforcement; a second vendor's items require a split order.
+FR-ORD-02 Immediate delivery or scheduled delivery up to 24 hours in advance.
+FR-ORD-03 Itemized total (subtotal + delivery fee + platform fee) shown before confirmation.
+FR-ORD-04 Cancellation permitted only while the order remains “Placed.”
+FR-ORD-05 Unique, traceable order ID and digital receipt generated on confirmation.
+FR-ORD-06 Vendor-configurable minimum order value (default ₹50).
+FR-ORD-07 Up to 200 characters of item-level special instructions.
+FR-ORD-08 Abandoned cart persisted for 24 hours and auto-restored.
+
+4.5 Payment & Wallet Management
+Priority: High. Enables the cashless transaction experience central to the platform's value proposition.
+Stimulus/Response: A student selects UPI, card, or wallet at checkout; on gateway success the order is confirmed, and on failure the student is offered a retry or an alternate method. Wallet top-ups follow the same gateway path.
+FR-PAY-01 UPI, card, and in-app wallet as independently selectable payment methods.
+FR-PAY-02 Wallet top-up in ₹100 increments up to a ₹5,000 cap (RBI PPI-compliant).
+FR-PAY-03 Auto-debit of wallet for recurring mess subscription on a configured date.
+FR-PAY-04 Refunds within 5–7 business days, or instant credit to wallet.
+FR-PAY-05 Immutable transaction ledger visible under “Transaction History.”
+FR-PAY-06 No raw card/CVV/UPI-PIN storage; all handling tokenized via gateway.
+FR-PAY-07 Current wallet balance shown on the Home and Cart screens.
+FR-PAY-08 Confirmation notification sent on every wallet transaction.
+
+4.6 Order Tracking & Delivery Management
+Priority: High. Provides the real-time delivery transparency identified as the largest pain point in the current manual process.
+Stimulus/Response: A vendor accepts and prepares an order; on “Ready,” the system assigns or lets an agent claim it; the agent marks “Out for Delivery” then “Delivered” at the student's chosen delivery point, optionally with a proof photo.
+FR-DEL-01 Real-time status propagation across student/vendor/agent via WebSocket.
+FR-DEL-02 Nearest-agent-first assignment algorithm based on last known location.
+FR-DEL-03 60-second accept/decline window with automatic reassignment.
+FR-DEL-04 Dynamically recalculated delivery ETA at every status transition.
+FR-DEL-05 Student-selected delivery point clearly shown to the assigned agent.
+FR-DEL-06 Delivery-completion timestamp logged for performance analytics.
+FR-DEL-07 Agent-controlled Available/Unavailable toggle for shift management.
+FR-DEL-08 Maximum two simultaneous “Out for Delivery” orders per agent.
+
+4.7 Notifications & Alerts
+Priority: Medium-High. Keeps all actors informed of relevant events without requiring the app to remain open.
+Stimulus/Response: An order-status change triggers a push notification to the relevant actor; if delivery is unacknowledged within 60 seconds, a critical/transactional message automatically falls back to SMS.
+FR-NOT-01 Push alert to the student at every order-status transition.
+FR-NOT-02 Push alert to the vendor immediately on receiving a new order.
+FR-NOT-03 Push alert to an eligible delivery agent on order availability.
+FR-NOT-04 SMS fallback for order-confirmation/delivery if push unacknowledged in 60s.
+FR-NOT-05 Independently configurable promotional vs. transactional preferences.
+FR-NOT-06 Low-wallet-balance alert triggered below ₹50 for auto-debit students.
+FR-NOT-07 Administrator alert on submission of a new vendor application.
+FR-NOT-08 Batched daily summary notification for Mess Committee staff.
+
+4.8 Ratings & Reviews
+Priority: Medium. Closes the feedback loop informing future student purchasing choices and vendor quality improvement.
+Stimulus/Response: On delivery, the student receives a dismissible prompt to rate 1–5 stars and optionally leave a written review, which is folded into the vendor's rolling aggregate rating shown to future students.
+FR-REV-01 Post-delivery rating prompt within 24 hours, dismissible without penalty.
+FR-REV-02 Rolling 90-day average rating displayed to one-decimal precision.
+FR-REV-03 A single public vendor response permitted per individual review.
+FR-REV-04 Admin removal of reviews violating content guidelines.
+FR-REV-05 One rating enforced per completed order.
+FR-REV-06 Three most-recent written reviews shown on the vendor's menu page.
+FR-REV-07 Up to two optional photo attachments per review.
+FR-REV-08 Review sorting by Most Recent or Highest Rated.
+
+4.9 Admin & Vendor Dashboard
+Priority: High. The “back office” counterpart to the student-facing app, used for vendor operations and platform governance.
+Stimulus/Response: A vendor manages their Kanban-style order queue and menu availability; the Administrator reviews pending vendor applications, platform-wide metrics, and escalated disputes from a single console.
+FR-ADM-01 Pending vendor-application queue with approve/reject/revise actions.
+FR-ADM-02 Self-service menu-item CRUD (name, price, photo, dietary tag) for vendors.
+FR-ADM-03 Instant vendor-controlled “accepting orders” toggle.
+FR-ADM-04 Dispute-resolution interface listing escalated, flagged orders.
+FR-ADM-05 Manual refund/adjustment with mandatory, audit-logged justification.
+FR-ADM-06 Role-based access control separating vendor-own-data from admin view.
+FR-ADM-07 Read-only vendor view of their own onboarding documentation.
+FR-ADM-08 CSV export of the active-vendor list for offline record-keeping.
+
+4.10 Complaint & Refund Management
+Priority: Medium. Reduces friction when an order does not go as expected, preserving long-term student trust.
+Stimulus/Response: A student raises a complaint with an issue category and optional photo; the responsible vendor has a fixed SLA to respond, after which unresolved complaints auto-escalate to the Administrator for final resolution.
+FR-CMP-01 Complaint raising within 12 hours of delivery, predefined issue categories.
+FR-CMP-02 4-hour vendor-response SLA on every newly-raised complaint.
+FR-CMP-03 Automatic escalation to the Administrator on SLA breach.
+FR-CMP-04 Full/partial/zero refund resolution with a mandatory reason code.
+FR-CMP-05 Persistent per-student and per-vendor complaint history.
+FR-CMP-06 Status notification to the student at every complaint stage.
+FR-CMP-07 One complaint enforced per order, preventing duplicate threads.
+FR-CMP-08 Vendor-offered free replacement as an alternative to a refund.
+
+4.11 Reporting & Analytics
+Priority: Medium. Converts transactional data into actionable mess-planning and vendor-performance insight.
+Stimulus/Response: The Administrator selects a date range and metric (orders, revenue, top items, wastage) on the Analytics screen; the system renders the corresponding chart or table, with an option to export the underlying data.
+FR-RPT-01 Daily order-volume report segmented by hostel block and vendor.
+FR-RPT-02 Estimated mess-wastage indicator (pre-orders vs. subscriber count).
+FR-RPT-03 Self-service vendor sales dashboard (revenue, top items, peak hours).
+FR-RPT-04 CSV export available for any generated report.
+FR-RPT-05 Average delivery-completion time computed per delivery agent.
+FR-RPT-06 Monthly platform-KPI summary email sent to the Administrator.
+FR-RPT-07 Automatic flagging of vendors whose average rating falls below 3.0.
+FR-RPT-08 Minimum 12-month retention of historical analytics data.
+
+Table 4-1: Consolidated Functional Requirements Summary
+Feature
+Requirement Count
+Priority
+4.1 User Registration & Authentication
+8 (FR-AUTH-01–08)
+High
+4.2 Hostel/Mess & Vendor Onboarding
+8 (FR-VEN-01–08)
+High
+4.3 Menu Browsing & Search
+8 (FR-MEN-01–08)
+High
+4.4 Cart & Order Placement
+8 (FR-ORD-01–08)
+High
+4.5 Payment & Wallet Management
+8 (FR-PAY-01–08)
+High
+4.6 Order Tracking & Delivery Management
+8 (FR-DEL-01–08)
+High
+4.7 Notifications & Alerts
+8 (FR-NOT-01–08)
+Medium-High
+4.8 Ratings & Reviews
+8 (FR-REV-01–08)
+Medium
+4.9 Admin & Vendor Dashboard
+8 (FR-ADM-01–08)
+High
+4.10 Complaint & Refund Management
+8 (FR-CMP-01–08)
+Medium
+4.11 Reporting & Analytics
+8 (FR-RPT-01–08)
+Medium
+Total
+equirements
+
+5. Other Nonfunctional Requirements
+5.1 Performance Requirements
+Operation
+Target
+Measurement Condition
+Concurrent active users supported
+2,000 minimum per campus
+Peak load, no degradation
+API response time (menu load, cart update)
+95% within 500 ms
+Up to 500 requests/second
+Order-status propagation to clients
+Within 2 seconds
+From server-side state change
+Search query response
+Within 2 seconds
+Catalog of up to 5,000 items
+System uptime
+99.5%
+Operational hours, 7 AM–11 PM, monthly
+Order-history retrieval
+Within 1 second
+Up to 500 historical orders/student
+
+NFR-PERF-01: The system shall support a minimum of 2,000 concurrent active users per hostel campus without measurable degradation in API response times.
+NFR-PERF-02: At least 95% of API requests for menu load and cart-update operations shall respond within 500 milliseconds under a load of up to 500 requests per second.
+NFR-PERF-03: Order-status updates shall propagate to all relevant client interfaces within 2 seconds of the corresponding server-side state change.
+NFR-PERF-04: The menu search function shall return results within 2 seconds for a combined catalog of up to 5,000 items.
+NFR-PERF-05: The system shall maintain a minimum of 99.5% uptime during declared operational hours, measured monthly.
+NFR-PERF-06: Database queries retrieving order history shall complete within 1 second for up to 500 historical orders per student.
+NFR-PERF-07: The vendor dashboard's order-queue view shall refresh to reflect a newly-placed order within 3 seconds, without a manual page reload.
+These targets were derived primarily from anticipated peak-load conditions during the two highest-traffic windows identified in stakeholder interviews: breakfast (7:30–9:00 AM) and dinner (7:30–9:30 PM).
+5.2 Safety Requirements
+NFR-SAFE-01: The system shall clearly display allergen information, where provided by the vendor, on every menu item's detail page.
+NFR-SAFE-02: The system shall prevent new orders for any item marked unavailable due to a declared food-safety recall, and shall alert any student with a pending order for a recalled item.
+NFR-SAFE-03: The system shall not process any payment without an explicit, distinct confirmation action, preventing accidental financial loss.
+NFR-SAFE-04: In the event of a failure during payment processing, the system shall ensure idempotent transaction handling such that no partial or duplicate charge is applied.
+NFR-SAFE-05: The system shall require a delivery agent to confirm the correct delivery point before marking an order “Delivered.”
+5.3 Security Requirements
+NFR-SEC-01: All data transmitted between client and server shall be encrypted using TLS 1.2 or higher, with no exceptions.
+NFR-SEC-02: All passwords shall be stored using bcrypt hashing with a minimum cost factor of 12.
+NFR-SEC-03: The system shall implement role-based access control (RBAC) strictly limiting each user class to its authorized functionality.
+NFR-SEC-04: The system shall log all administrative actions to an immutable audit log retained for a minimum of 12 months.
+NFR-SEC-05: The system shall comply with applicable provisions of India's Digital Personal Data Protection Act, 2023.
+NFR-SEC-06: The system shall implement rate limiting on all authentication-related endpoints.
+NFR-SEC-07: The system shall sanitize and validate all user-submitted input to prevent SQL injection and stored XSS.
+NFR-SEC-08: The system shall require re-authentication before sensitive account actions such as a change of registered mobile number.
+5.4 Software Quality Attributes
+NFR-QUAL-01 (Usability): A first-time student shall complete their first order within 5 minutes without external assistance.
+NFR-QUAL-02 (Reliability): The order-processing service shall achieve MTBF exceeding 720 hours during pilot operation.
+NFR-QUAL-03 (Maintainability): The backend's modular architecture shall allow independent module updates without full-system downtime.
+NFR-QUAL-04 (Portability): The mobile codebase shall achieve at least 90% code reuse between Android and iOS builds.
+NFR-QUAL-05 (Scalability): The architecture shall support horizontal scaling to accommodate additional hostel campuses in a future version.
+NFR-QUAL-06 (Testability): Every functional requirement shall be independently verifiable through an automated or manual test case.
+5.5 Business Rules
+ID
+Rule
+BR-01
+One active account per student, linked to a unique roll number.
+BR-02
+Insufficient-balance auto-debit triggers a payment-due notification and 48-hour grace period.
+BR-03
+Vendor payout on a T+2 cycle, net of an 8% default platform commission.
+BR-04
+Orders below vendor-configured minimum value cannot proceed to checkout.
+BR-05
+Three consecutive declined assignments auto-marks a delivery agent “Unavailable.”
+BR-06
+Refunds over ₹500 require Administrator sign-off; ≤₹500 may be vendor-approved.
+BR-07
+Food-safety-suspended vendors ineligible for reactivation for 14 days minimum.
+BR-08
+Discount codes (future) not combinable with wallet auto-debit subscription discount.
+BR-09
+Complaint window closes 12 hours after delivery.
+BR-10
+Expired FSSAI license auto-hides a vendor pending renewal verification.
+6. Other Requirements
+Legal and Regulatory Requirements
+The platform shall retain complete transaction records for a minimum of 8 years, in compliance with applicable Indian tax and financial record-keeping regulations governing digital payment platforms. Vendor FSSAI license validity, as established in Business Rule BR-10, shall remain a mandatory and continuously-enforced precondition for a vendor's continued active status on the platform.
+Internationalization Requirements
+Not applicable for Version 1.0; the system targets a single-language (English) deployment consistent with the language of instruction at the target university. A future version may introduce Hindi-language support, tracked as an open item in Appendix C.
+Reuse Objectives
+The Payment Service and Notification Service are deliberately designed as loosely-coupled, independently-deployable modules to enable their reuse across potential future Manipal University Jaipur digital initiatives — for example, a general-purpose campus marketplace — subject to separate architectural review beyond the scope of this SRS.
+Installation Requirements
+The student and delivery-agent applications shall be made distributable via the Google Play Store and Apple App Store for the eventual production release. A sideloadable Android APK shall additionally be provided for initial pilot testing within a single hostel block prior to public store submission, allowing faster iteration during the academic-project evaluation period.
+Licensing Requirements
+All third-party libraries and frameworks incorporated into the system — including Flutter, React, and all Node.js package dependencies — shall be verified for MIT, Apache 2.0, or otherwise compatible open-source licensing prior to inclusion, and a complete license manifest shall be maintained within the project's version-control repository for audit purposes.
+Cultural and Political Requirements
+The system shall accommodate dietary restrictions relevant to the target population, including but not limited to Jain dietary requirements (no root vegetables), consistent with the dietary-tag filtering established in FR-MEN-02.
+Appendix A: Glossary
+Term
+Definition
+HostelBite
+The proposed product name for this Hostel Food Delivery Application.
+Mess Committee
+The student/staff body responsible for managing a hostel's primary dining facility and its subscription-based meal plan.
+Empaneled Vendor
+A third-party food vendor formally approved and listed on the platform following the onboarding process.
+Wallet
+An in-app Prepaid Payment Instrument (PPI) allowing students to store a monetary balance for cashless ordering.
+Delivery Point
+The specific in-hostel location (room, common room, or hostel gate) designated by a student for order handoff.
+SLA
+Service Level Agreement; a defined maximum response or resolution time attached to a given process.
+FSSAI
+Food Safety and Standards Authority of India; issues mandatory licenses to food business operators.
+RBAC
+Role-Based Access Control; a security model that restricts functionality based on a user's assigned role.
+OTP
+One-Time Password; a short-lived numeric code used to verify a user's identity.
+Auto-debit
+The automatic recurring deduction from a student's wallet balance to satisfy a subscribed mess charge.
+T+2 Settlement
+A payout cycle in which funds are transferred to a vendor two business days after the transaction date.
+Kanban Board
+A visual task-management layout organizing orders into status-based columns.
+PPI
+Prepaid Payment Instrument; the RBI-regulated category of financial instrument governing the wallet.
+Idempotent Transaction
+A transaction designed such that repeating it produces the same result as performing it once.
+Webhook
+An automated HTTP callback sent by an external service to notify the platform of an asynchronous event.
+
+Appendix B: Analysis Models
+B.1 Use Case Diagram (described)
+The system's primary actors are Student, Vendor, Delivery Agent, Mess Committee, and Administrator. Key use cases include: Register/Login, Browse Menu, Place Order, Make Payment, Track Order, Rate Order, Raise Complaint, Manage Menu (Vendor), Fulfill Order (Vendor), Accept/Decline Delivery (Delivery Agent), Approve Vendor (Administrator), Resolve Complaint (Administrator), and View Analytics (Administrator). The Student actor has an “includes” relationship from Place Order to Make Payment, and an “extends” relationship from Track Order to Raise Complaint, reflecting that a complaint is an optional, conditional continuation of the tracking flow rather than a mandatory step.
+B.2 Entity-Relationship Overview (described)
+Core entities are User (related 1:1 to Student/Vendor/DeliveryAgent/Admin subtypes via a role attribute), MenuItem (many-to-one with Vendor), Order (many-to-one with both Student and Vendor; one-to-many with OrderItem), Payment (one-to-one with Order), WalletTransaction (many-to-one with User), Complaint (one-to-one with Order), and Review (one-to-one with Order). Referential integrity is enforced such that an Order record cannot exist without valid foreign keys to both a Student and a Vendor entity, and a Payment record is created only upon a successful, cryptographically-verified gateway webhook callback (per COMM-04).
+B.3 Order Lifecycle State Diagram (described)
+The Order entity's status field transitions through a strict state machine: Payment Pending → Placed → Accepted → Preparing → Ready → Out for Delivery → Delivered, with permitted side-branches to Cancelled (only from Placed) and to Disputed (only from Delivered, within the 12-hour complaint window per BR-09). No state transition may skip an intermediate state, ensuring the order-tracking UI (UI-03) always reflects an accurate, sequential progression.
+Diagram artifacts — the full use case diagram, entity-relationship diagram, and order-lifecycle state diagram in graphical UML/Mermaid form — are maintained as separate source files within the project repository and are referenced here per IEEE 830 Appendix B convention.
+
+
+
+
+Appendix C: To Be Determined List
+ID
+TBD Item
+Owner
+Target Resolution
+TBD-01
+Final gateway selection (Razorpay vs. Cashfree) pending fee comparison
+Vaibhav Kumar
+Before Sprint 3
+TBD-02
+Exact platform commission per vendor category
+Saharsh Vaibhav Lal
+Pending mess committee approval
+TBD-03
+Hindi-language localization for pilot vs. Version 2.0
+Both authors
+Post-pilot survey
+TBD-04
+Data-retention policy upon student graduation
+Both authors
+Before Section 5.3 finalized
+TBD-05
+Integration with university ID card system
+Saharsh Vaibhav Lal
+Pending university IT response
+TBD-06
+Delivery-agent compensation model
+Both authors
+Before pilot rollout
+TBD-07
+Promotional/discount-code system in v1.0 or deferred
+Both authors
+Post feature-freeze review
+TBD-08
+Low-rated-vendor workflow threshold
+Both authors
+Before Section 4.11 finalized
+
+
+
+
+Appendix D: Requirements Traceability Matrix
+Feature
+Requirement IDs
+Related NFRs / BRs
+Priority
+User Registration & Authentication
+FR-AUTH-01 to 08
+NFR-SEC-01, 02, 06, 08
+High
+Hostel/Mess & Vendor Onboarding
+FR-VEN-01 to 08
+NFR-SEC-03, 05; BR-10
+High
+Menu Browsing & Search
+FR-MEN-01 to 08
+NFR-PERF-02, 04
+High
+Cart & Order Placement
+FR-ORD-01 to 08
+NFR-PERF-01, 03; NFR-SAFE-01; BR-04
+High
+Payment & Wallet Management
+FR-PAY-01 to 08
+NFR-SAFE-03, 04; NFR-SEC-05; BR-02, 03
+High
+Order Tracking & Delivery Management
+FR-DEL-01 to 08
+NFR-PERF-03, 06; NFR-SAFE-05; BR-05
+High
+Notifications & Alerts
+FR-NOT-01 to 08
+NFR-PERF-03
+Medium-High
+Ratings & Reviews
+FR-REV-01 to 08
+NFR-QUAL-01
+Medium
+Admin & Vendor Dashboard
+FR-ADM-01 to 08
+NFR-SEC-03, 04
+High
+Complaint & Refund Management
+FR-CMP-01 to 08
+BR-06, 09
+Medium
+Reporting & Analytics
+FR-RPT-01 to 08
+NFR-QUAL-05
+Medium
+
